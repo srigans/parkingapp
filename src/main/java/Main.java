@@ -23,7 +23,7 @@ public class Main extends HttpServlet {
       throws ServletException, IOException {
    resp.getWriter().print("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
               "<Response>\n" +
-              "<Message from="+17865162751">welcome to Yali's App!</Message>\n" +
+              "<Message from=\"+17865162751\">welcome to Yali's App!</Message>\n" +
               "</Response>");
   }
 
