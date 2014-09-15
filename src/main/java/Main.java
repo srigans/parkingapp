@@ -25,7 +25,7 @@ public class Main extends HttpServlet {
       resp.getWriter().print("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
               "<Response>\n" +
               "<Say>welcome to Yali's App!</Say>\n" +
-              "</Response>")
+              "</Response>");
   }
 
   private void showDatabase(HttpServletRequest req, HttpServletResponse resp)
