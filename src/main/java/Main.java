@@ -21,8 +21,7 @@ public class Main extends HttpServlet {
 
   private void showHome(HttpServletRequest req, HttpServletResponse resp)
       throws ServletException, IOException {
-    resp.getWriter().print("Hello from Java!");
-      resp.getWriter().print("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+   resp.getWriter().print("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
               "<Response>\n" +
               "<Say>welcome to Yali's App!</Say>\n" +
               "</Response>");
