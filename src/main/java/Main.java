@@ -25,6 +25,7 @@ public class Main extends HttpServlet {
               "<Response>\n" +
               "<Message from=\"+17865162751\">welcome to Yali's App!</Message>\n" +
               "</Response>");
+      resp.setContentType("application/xml");
   }
 
   private void showDatabase(HttpServletRequest req, HttpServletResponse resp)
