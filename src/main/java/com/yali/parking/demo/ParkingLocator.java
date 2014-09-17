@@ -61,7 +61,7 @@ public class ParkingLocator extends HttpServlet {
 	private void showHome(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 
-		String address = req.getHeader("Body");
+		String address = req.getParameter("Body");
 		resp.getWriter()
 				.print("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
 						+ "<Response>\n"
