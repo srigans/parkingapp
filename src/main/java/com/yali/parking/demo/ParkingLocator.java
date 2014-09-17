@@ -1,5 +1,10 @@
 package com.yali.parking.demo;
+
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.*;
@@ -35,11 +40,11 @@ public class ParkingLocator extends HttpServlet {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	public static final String GOOGLE_GEOCODING_API_ROOT = "https://maps.googleapis.com/maps/api/geocode/json?";
+	public static final String GOOGLE_GEOCODING_API_ROOT = "https://maps.googleapis.com/maps/api/geocode/xml?";
 	public static final String API_KEY = "AIzaSyBUgDwlLK-SFO8QdSEoM9RTrcI0_CoJVbk";
 
 	private HttpClientBuilder clientBuilder = HttpClientBuilder.create();
-	
+
 	private Log log = LogFactory.getLog(ParkingLocator.class);
 
 	@Override
@@ -65,39 +70,71 @@ public class ParkingLocator extends HttpServlet {
 		resp.setContentType("application/xml");
 	}
 
-	public String getLatLong(String addr) throws ClientProtocolException, IOException {
+	public String getLatLong(String addr) throws ClientProtocolException,
+			IOException {
 
-		addr = addr.replace(" ", "+");
-		HttpGet getRequest = new HttpGet(GOOGLE_GEOCODING_API_ROOT + "key="
-				+ API_KEY + "&address=" + addr);
+		log.info("address to be looked up: " + addr);
+		String fullURL = GOOGLE_GEOCODING_API_ROOT + "key=" + API_KEY
+				+ "&address=" + addr.replace(" ", "+");
+		HttpGet getRequest = new HttpGet(fullURL);
+
+		log.info("full URL for geocoding API: " + fullURL);
 
 		CloseableHttpClient httpClient = clientBuilder.build();
 		HttpResponse response = httpClient.execute(getRequest);
 		int statusCode = response.getStatusLine().getStatusCode();
-		log.info("Calling the Google Geocoding API, status code="+ statusCode);
-		
-		String lat = null, lng=null;	
+		log.info("Calling the Google Geocoding API, status code=" + statusCode);
+
+		String lat = null, lng = null;
 		Document doc = null;
-		
+
 		if (statusCode == 200) {
-			
+
 			HttpEntity entity = response.getEntity();
 			DocumentBuilderFactory factory = DocumentBuilderFactory
 					.newInstance();
-			
+
 			try {
 				DocumentBuilder builder = factory.newDocumentBuilder();
-				doc = builder.parse(entity.getContent());
-				NodeList nodes = doc.getChildNodes().item(0).getChildNodes();
-				Node node;
-				
-				for (int i=0;i<nodes.getLength();i++) {
-					node =nodes.item(i); 
-					if (node.getNodeName().equals("geometry")) {
-						lat = node.getChildNodes().item(0).getChildNodes().item(0).getNodeValue();
-						lng =node.getChildNodes().item(0).getChildNodes().item(1).getNodeValue();
-						log.info("latitude="+lat +", longitude="+ lng);
-						break;
+				InputStream is = entity.getContent();
+
+				doc = builder.parse(is);
+
+				NodeList resultNode = doc.getElementsByTagName("result");
+
+				NodeList resultChildren = resultNode.item(0).getChildNodes();
+				Node resultChild;
+
+				for (int i = 0; i < resultChildren.getLength(); i++) {
+					resultChild = resultChildren.item(i);
+
+					if (resultChild.getNodeName().equals("geometry")) {
+						log.info("found geometry node");
+						Node locationNode = null;
+						for (int j = 0; j < resultChild.getChildNodes()
+								.getLength(); j++) {
+
+							if (resultChild.getChildNodes().item(j)
+									.getNodeName().equals("location")) {
+								log.info("found location node");
+							locationNode = resultChild.getChildNodes().item(j);
+							}
+						}
+
+						if (locationNode != null) {
+							log.info("num of children of location nodes: "
+									+ locationNode.getChildNodes().getLength());
+
+							NodeList nodes = locationNode.getChildNodes();
+							for (int k = 0; k < nodes.getLength(); k++) {
+
+								if (nodes.item(k).getNodeName().equals("lat"))
+									lat = nodes.item(k).getTextContent();
+
+								if (nodes.item(k).getNodeName().equals("lng"))
+									lng = nodes.item(k).getTextContent();
+							}
+						}
 					}
 				}
 			} catch (ParserConfigurationException e) {
@@ -107,13 +144,10 @@ public class ParkingLocator extends HttpServlet {
 			} catch (SAXException e) {
 				e.printStackTrace();
 			}
-		} 
-		else
+		} else
 			log.info("Opppos, Google Geocoding API failed!");
-			
-			
-		return lat +","+ lng;
-		
+
+		return lat + "," + lng;
 
 	}
 
