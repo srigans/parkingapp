@@ -1,3 +1,4 @@
+package com.yali.parking.demo;
 import java.io.IOException;
 
 import javax.servlet.ServletException;
@@ -17,6 +18,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.sql.*;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -26,12 +29,18 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 
-public class Main extends HttpServlet {
+public class ParkingLocator extends HttpServlet {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	public static final String GOOGLE_GEOCODING_API_ROOT = "https://maps.googleapis.com/maps/api/geocode/json?";
 	public static final String API_KEY = "AIzaSyBUgDwlLK-SFO8QdSEoM9RTrcI0_CoJVbk";
 
 	private HttpClientBuilder clientBuilder = HttpClientBuilder.create();
+	
+	private Log log = LogFactory.getLog(ParkingLocator.class);
 
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
@@ -65,25 +74,30 @@ public class Main extends HttpServlet {
 		CloseableHttpClient httpClient = clientBuilder.build();
 		HttpResponse response = httpClient.execute(getRequest);
 		int statusCode = response.getStatusLine().getStatusCode();
-		String lat = null, lng=null;
+		log.info("Calling the Google Geocoding API, status code="+ statusCode);
 		
+		String lat = null, lng=null;	
 		Document doc = null;
+		
 		if (statusCode == 200) {
+			
 			HttpEntity entity = response.getEntity();
-			// String content = EntityUtils.toString(entity);
-
 			DocumentBuilderFactory factory = DocumentBuilderFactory
 					.newInstance();
+			
 			try {
 				DocumentBuilder builder = factory.newDocumentBuilder();
 				doc = builder.parse(entity.getContent());
 				NodeList nodes = doc.getChildNodes().item(0).getChildNodes();
 				Node node;
+				
 				for (int i=0;i<nodes.getLength();i++) {
 					node =nodes.item(i); 
 					if (node.getNodeName().equals("geometry")) {
 						lat = node.getChildNodes().item(0).getChildNodes().item(0).getNodeValue();
 						lng =node.getChildNodes().item(0).getChildNodes().item(1).getNodeValue();
+						log.info("latitude="+lat +", longitude="+ lng);
+						break;
 					}
 				}
 			} catch (ParserConfigurationException e) {
@@ -93,7 +107,11 @@ public class Main extends HttpServlet {
 			} catch (SAXException e) {
 				e.printStackTrace();
 			}
-		}
+		} 
+		else
+			log.info("Opppos, Google Geocoding API failed!");
+			
+			
 		return lat +","+ lng;
 		
 
@@ -136,7 +154,7 @@ public class Main extends HttpServlet {
 				ServletContextHandler.SESSIONS);
 		context.setContextPath("/");
 		server.setHandler(context);
-		context.addServlet(new ServletHolder(new Main()), "/*");
+		context.addServlet(new ServletHolder(new ParkingLocator()), "/*");
 		server.start();
 		server.join();
 	}
