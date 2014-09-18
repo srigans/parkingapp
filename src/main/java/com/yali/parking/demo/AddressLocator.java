@@ -56,7 +56,7 @@ public class AddressLocator extends HttpServlet {
 		resp.getWriter()
 				.print("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
 						+ "<Response>\n"
-						+ "<Message from=\"+17865162751\"> Parking Info: "
+						+ "<Message from=\"+2403033451\"> Parking Info: "
 						+ parkings + "</Message>\n" + "</Response>");
 		resp.setContentType("application/xml");
 	}
