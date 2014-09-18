@@ -81,6 +81,9 @@ public class ParkingLocator {
 						}
 					}
 				}
+				
+				log.info(messageNode.getTextContent());
+
 				return responseStringBlr.toString();
 			}
 			catch (ParserConfigurationException e) {
