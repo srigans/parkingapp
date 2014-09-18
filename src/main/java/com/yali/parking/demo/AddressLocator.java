@@ -39,28 +39,44 @@ public class AddressLocator extends HttpServlet {
 	private Log log = LogFactory.getLog(AddressLocator.class);
 	private ParkingLocator parkingLocator = new ParkingLocator();
 
+	String address = null;
+	double radius = 0;
+
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 
-		String address = req.getParameter("Body");
-
-		getTwiMLForResponse(address, resp);
+		if (req.getRequestURI().contains("start")) {
+			getRadiusResponse(req, resp);
+		} else
+			getTwiMLForResponse(req, resp);
 
 	}
 
-	private void getTwiMLForResponse(String address, HttpServletResponse resp)
-			throws ServletException, IOException {
+	private void getTwiMLForResponse(HttpServletRequest req,
+			HttpServletResponse resp) throws ServletException, IOException {
 
-		
 		String lagLng = getLatLong(address);
-		
-		String parkings = parkingLocator.getAvailableParking(lagLng);
+
+		radius = Double.parseDouble(req.getParameter("Body"));
+		String parkings = parkingLocator.getAvailableParking(lagLng, radius);
 		resp.getWriter()
 				.print("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
 						+ "<Response>\n"
-						+ "<Message from=\"+12403033451\"> Parking Info: "
+						+ "<Message from=\"+12403033451\" action=\"/parking\">Parking info:"
 						+ parkings + "</Message>\n" + "</Response>");
+		resp.setContentType("application/xml");
+	}
+
+	private void getRadiusResponse(HttpServletRequest req,
+			HttpServletResponse resp) throws IOException {
+		address = req.getParameter("Body");
+		resp.getWriter()
+				.print("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+						+ "<Response>\n"
+						+ "<Message from=\"+12403033451\"  action=\"/parking\" method=\"POST\">"
+						+ "Please enter radius of your search: "
+						+ "</Message>\n" + "</Response>");
 		resp.setContentType("application/xml");
 	}
 
@@ -170,14 +186,16 @@ public class AddressLocator extends HttpServlet {
 	 * dbUri.getHost() + dbUri.getPath();
 	 * 
 	 * return DriverManager.getConnection(dbUrl, username, password); }
-	 * 
-
 	 */
-	
-	  public static void main(String[] args) throws Exception { Server server =
-	  new Server(Integer.valueOf(System.getenv("PORT"))); ServletContextHandler
-	  context = new ServletContextHandler( ServletContextHandler.SESSIONS);
-	  context.setContextPath("/"); server.setHandler(context);
-	  context.addServlet(new ServletHolder(new AddressLocator()), "/*");
-	  server.start(); server.join(); }
+
+	public static void main(String[] args) throws Exception {
+		Server server = new Server(Integer.valueOf(System.getenv("PORT")));
+		ServletContextHandler context = new ServletContextHandler(
+				ServletContextHandler.SESSIONS);
+		context.setContextPath("/");
+		server.setHandler(context);
+		context.addServlet(new ServletHolder(new AddressLocator()), "/*");
+		server.start();
+		server.join();
+	}
 }

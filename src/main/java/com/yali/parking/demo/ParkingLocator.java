@@ -29,13 +29,17 @@ public class ParkingLocator {
 
 	public static final double DEFAULT_RADIUS = 0.1;
 
-	public String getAvailableParking(String laglng)
+	public String getAvailableParking(String laglng, double radius)
 			throws ClientProtocolException, IOException {
 		String lat = laglng.substring(0, laglng.indexOf(','));
 		String lng = laglng.substring(laglng.indexOf(',')+1);
 
+		
+		if (radius<0)
+			radius= DEFAULT_RADIUS;
+		
 		String fullURL = PARKING_AVAIL_SERVICE + "lat=" + lat + "&long=" + lng
-				+ "&radius" + DEFAULT_RADIUS;
+				+ "&radius=" + DEFAULT_RADIUS;
 
 		HttpGet getRequest = new HttpGet(fullURL);
 
@@ -100,6 +104,6 @@ public class ParkingLocator {
 	
 	public static void main(String args[]) throws ClientProtocolException, IOException {
 		ParkingLocator test = new ParkingLocator();
-		System.out.println(test.getAvailableParking("37.7780360,-122.4325120"));
+		System.out.println(test.getAvailableParking("37.7780360,-122.4325120",0.1));
 	}
 }
