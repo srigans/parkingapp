@@ -39,7 +39,7 @@ public class ParkingLocator {
 			radius= DEFAULT_RADIUS;
 		
 		String fullURL = PARKING_AVAIL_SERVICE + "lat=" + lat + "&long=" + lng
-				+ "&radius=" + DEFAULT_RADIUS;
+				+ "&radius=" + radius;
 
 		HttpGet getRequest = new HttpGet(fullURL);
 
