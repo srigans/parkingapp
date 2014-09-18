@@ -52,12 +52,14 @@ public class AddressLocator extends HttpServlet {
 	private void getTwiMLForResponse(String address, HttpServletResponse resp)
 			throws ServletException, IOException {
 
+		
 		String lagLng = getLatLong(address);
-
+		
 		String parkings = parkingLocator.getAvailableParking(lagLng);
-		resp.getWriter().print(
-				"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + "<Response>\n"
-						+ "<Message from=\"+2403033451\"> Parking Info: "
+		resp.getWriter()
+				.print("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+						+ "<Response>\n"
+						+ "<Message from=\"+12403033451\"> Parking Info: "
 						+ parkings + "</Message>\n" + "</Response>");
 		resp.setContentType("application/xml");
 	}
@@ -168,16 +170,14 @@ public class AddressLocator extends HttpServlet {
 	 * dbUri.getHost() + dbUri.getPath();
 	 * 
 	 * return DriverManager.getConnection(dbUrl, username, password); }
-	 */
+	 * 
 
-	public static void main(String[] args) throws Exception {
-		Server server = new Server(Integer.valueOf(System.getenv("PORT")));
-		ServletContextHandler context = new ServletContextHandler(
-				ServletContextHandler.SESSIONS);
-		context.setContextPath("/");
-		server.setHandler(context);
-		context.addServlet(new ServletHolder(new AddressLocator()), "/*");
-		server.start();
-		server.join();
-	}
+	 */
+	
+	  public static void main(String[] args) throws Exception { Server server =
+	  new Server(Integer.valueOf(System.getenv("PORT"))); ServletContextHandler
+	  context = new ServletContextHandler( ServletContextHandler.SESSIONS);
+	  context.setContextPath("/"); server.setHandler(context);
+	  context.addServlet(new ServletHolder(new AddressLocator()), "/*");
+	  server.start(); server.join(); }
 }
