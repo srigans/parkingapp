@@ -39,15 +39,17 @@ public class AddressLocator extends HttpServlet {
 	private Log log = LogFactory.getLog(AddressLocator.class);
 	private ParkingLocator parkingLocator = new ParkingLocator();
 
-	String address = null;
+	String address = "";
 	double radius = 0;
 
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 
-		if (req.getRequestURI().contains("start")) {
-			getRadiusResponse(req, resp);
+		
+		
+		if (address.isEmpty()) {
+			getInitialTwiML(req, resp);
 		} else
 			getTwiMLForResponse(req, resp);
 
@@ -63,18 +65,18 @@ public class AddressLocator extends HttpServlet {
 		resp.getWriter()
 				.print("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
 						+ "<Response>\n"
-						+ "<Message from=\"+12403033451\" action=\"/parking\">Parking info:"
+						+ "<Message from=\"+12403033451\">Parking info:"
 						+ parkings + "</Message>\n" + "</Response>");
 		resp.setContentType("application/xml");
 	}
 
-	private void getRadiusResponse(HttpServletRequest req,
+	private void getInitialTwiML(HttpServletRequest req,
 			HttpServletResponse resp) throws IOException {
 		address = req.getParameter("Body");
 		resp.getWriter()
 				.print("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
 						+ "<Response>\n"
-						+ "<Message from=\"+12403033451\"  action=\"/parking\" method=\"POST\">"
+						+ "<Message from=\"+12403033451\">"
 						+ "Please enter radius of your search: "
 						+ "</Message>\n" + "</Response>");
 		resp.setContentType("application/xml");
