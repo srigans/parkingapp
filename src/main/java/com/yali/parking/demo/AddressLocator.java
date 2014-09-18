@@ -45,13 +45,12 @@ public class AddressLocator extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
-
 		
-		
-		if (address.isEmpty()) {
+		if (req.getParameter("Body").contains(",")) {
 			getInitialTwiML(req, resp);
-		} else
+		} else {
 			getTwiMLForResponse(req, resp);
+		}
 
 	}
 
@@ -68,11 +67,13 @@ public class AddressLocator extends HttpServlet {
 						+ "<Message from=\"+12403033451\">Parking info:"
 						+ parkings + "</Message>\n" + "</Response>");
 		resp.setContentType("application/xml");
+
+		address="";
 	}
 
 	private void getInitialTwiML(HttpServletRequest req,
 			HttpServletResponse resp) throws IOException {
-		address = req.getParameter("Body");
+		address=req.getParameter("Body");
 		resp.getWriter()
 				.print("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
 						+ "<Response>\n"
