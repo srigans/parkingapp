@@ -74,7 +74,6 @@ public class ParkingLocator {
 				Node messageNode = doc.getElementsByTagName("MESSAGE").item(0);
 				responseStringBlr.append(messageNode.getTextContent()+"\n");
 
-				log.info(messageNode.getTextContent());
 				NodeList availNodes = doc.getElementsByTagName("AVL");
 				Node availNode;
 				String availName,availDesc,availInterst;
@@ -93,19 +92,20 @@ public class ParkingLocator {
 						if (availNode.getChildNodes().item(j).getNodeName().equals("DESC"))
 						{
 							availDesc = availNode.getChildNodes().item(j).getTextContent();
-							responseStringBlr.append(", "+availDesc+"\n");
+							responseStringBlr.append(", "+availDesc);
 									
 						}
 						if (availNode.getChildNodes().item(j).getNodeName().equals("INTER"))
 						{
 							availInterst = availNode.getChildNodes().item(j).getTextContent();
-							responseStringBlr.append(", "+availInterst+"\n");
+							responseStringBlr.append(", "+availInterst);
 									
 						}
+						responseStringBlr.append("\n");
 			
 					}
 				}
-				log.info(responseStringBlr.toString());
+				log.info("response:"+responseStringBlr.toString());
 
 				return responseStringBlr.toString();
 			}
