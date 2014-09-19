@@ -22,6 +22,7 @@ import org.xml.sax.SAXException;
 
 public class ParkingLocator {
 
+	private static final int NUMBER_OF_AVAIL_PARKING = 10;
 	public static final String PARKING_AVAIL_SERVICE = "http://api.sfpark.org/sfpark/rest/availabilityservice?response=xml&uom=mile&";
 	private HttpClientBuilder clientBuilder = HttpClientBuilder.create();
 
@@ -74,15 +75,32 @@ public class ParkingLocator {
 				responseStringBlr.append(messageNode.getTextContent()+"\n");
 				
 				NodeList availNodes = doc.getElementsByTagName("AVL");
-				for (int i=0; i< availNodes.getLength();i++) {
-					
-					for (int j=0;j< availNodes.item(i).getChildNodes().getLength();j++) {
-						if (availNodes.item(i).getChildNodes().item(j).getNodeName().equals("NAME"))
+				Node availNode;
+				String availName,availDesc,availInterst;
+				for (int i=0; i< availNodes.getLength() && i<NUMBER_OF_AVAIL_PARKING;i++) {
+					availNode=availNodes.item(i);
+					for (int j=0;j<availNode .getChildNodes().getLength();j++) {
+						
+						
+						if (availNode.getChildNodes().item(j).getNodeName().equals("NAME"))
 						{
-							String availName = availNodes.item(i).getChildNodes().item(j).getTextContent();
-							responseStringBlr.append(availName+"\n");
+							availName= availNode.getChildNodes().item(j).getTextContent();
+							responseStringBlr.append(availName);
 									
 						}
+						if (availNode.getChildNodes().item(j).getNodeName().equals("DESC"))
+						{
+							availDesc = availNode.getChildNodes().item(j).getTextContent();
+							responseStringBlr.append(", "+availDesc+"\n");
+									
+						}
+						if (availNode.getChildNodes().item(j).getNodeName().equals("INTER"))
+						{
+							 availInterst = availNode.getChildNodes().item(j).getTextContent();
+							responseStringBlr.append(", "+availInterst+"\n");
+									
+						}
+						
 					}
 				}
 				
