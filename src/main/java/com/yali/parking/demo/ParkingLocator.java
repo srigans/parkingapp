@@ -98,14 +98,14 @@ public class ParkingLocator {
 						}
 						if (availNode.getChildNodes().item(j).getNodeName().equals("INTER"))
 						{
-							 availInterst = availNode.getChildNodes().item(j).getTextContent();
+							availInterst = availNode.getChildNodes().item(j).getTextContent();
 							responseStringBlr.append(", "+availInterst+"\n");
 									
 						}
 			
 					}
 				}
-				
+				log.info(responseStringBlr.toString());
 
 				return responseStringBlr.toString();
 			}
