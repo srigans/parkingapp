@@ -2,6 +2,7 @@ package com.yali.parking.demo;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -77,6 +78,7 @@ public class ParkingLocator {
 				NodeList availNodes = doc.getElementsByTagName("AVL");
 				Node availNode;
 				String availName,availDesc,availInterst;
+				ArrayList<String> availParkingInfo = new ArrayList<String>();
 				for (int i=0; (i< availNodes.getLength() && i<NUMBER_OF_AVAIL_PARKING);i++) {
 					availNode=availNodes.item(i);
 					
@@ -86,24 +88,30 @@ public class ParkingLocator {
 						if (availNode.getChildNodes().item(j).getNodeName().equals("NAME"))
 						{
 							availName= availNode.getChildNodes().item(j).getTextContent();
-							responseStringBlr.append(availName);
+							availParkingInfo.add(availName);
 									
 						}
 						if (availNode.getChildNodes().item(j).getNodeName().equals("DESC"))
 						{
 							availDesc = availNode.getChildNodes().item(j).getTextContent();
-							responseStringBlr.append(", "+availDesc);
+							availParkingInfo.add(availDesc);
 									
 						}
 						if (availNode.getChildNodes().item(j).getNodeName().equals("INTER"))
 						{
 							availInterst = availNode.getChildNodes().item(j).getTextContent();
-							responseStringBlr.append(", "+availInterst);
+							availParkingInfo.add(availInterst);
 									
 						}
-						responseStringBlr.append("\n");
-			
+						
 					}
+					
+					for (String s : availParkingInfo)
+					{
+						responseStringBlr.append(s+" ");
+					}
+					responseStringBlr.append("\n");
+					
 				}
 				log.info("response:"+responseStringBlr.toString());
 
