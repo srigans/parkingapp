@@ -101,13 +101,13 @@ public class ParkingLocator {
 						}
 						if (availNode.getChildNodes().item(j).getNodeName().equals("DESC"))
 						{
-							availDesc = availNode.getChildNodes().item(j).getTextContent();
+							availDesc = availNode.getChildNodes().item(j).getTextContent().replace("&", "and").replace("'", "");
 							availParking.setDesc(availDesc);
 									
 						}
 						if (availNode.getChildNodes().item(j).getNodeName().equals("INTER"))
 						{
-							availInterst = availNode.getChildNodes().item(j).getTextContent();
+							availInterst = availNode.getChildNodes().item(j).getTextContent().replace("&", "and").replace("'", "");
 							availParking.setIntersection(availInterst);
 									
 						}
@@ -124,7 +124,7 @@ public class ParkingLocator {
 					else
 						responseStringBlr.append(p.name+" "+p.intersection);
 					
-					//responseStringBlr.append("\n");
+					responseStringBlr.append("\n");
 					
 				}
 				log.info("response:"+responseStringBlr.toString());
