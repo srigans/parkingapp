@@ -46,11 +46,8 @@ public class AddressLocator extends HttpServlet {
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		
-		if (req.getParameter("Body").contains(",")) {
-			getInitialTwiML(req, resp);
-		} else {
 			getTwiMLForResponse(req, resp);
-		}
+		
 
 	}
 
@@ -59,8 +56,8 @@ public class AddressLocator extends HttpServlet {
 
 		String lagLng = getLatLong(address);
 
-		radius = Double.parseDouble(req.getParameter("Body"));
-		String parkings = parkingLocator.getAvailableParking(lagLng, radius);
+		//radius = Double.parseDouble(req.getParameter("Body"));
+		String parkings = parkingLocator.getAvailableParking(lagLng, 1);
 		resp.getWriter()
 				.print("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
 						+ "<Response>\n"
@@ -71,7 +68,7 @@ public class AddressLocator extends HttpServlet {
 		address="";
 	}
 
-	private void getInitialTwiML(HttpServletRequest req,
+	/*private void getInitialTwiML(HttpServletRequest req,
 			HttpServletResponse resp) throws IOException {
 		address=req.getParameter("Body");
 		resp.getWriter()
@@ -81,7 +78,7 @@ public class AddressLocator extends HttpServlet {
 						+ "Please enter radius of your search: "
 						+ "</Message>\n" + "</Response>");
 		resp.setContentType("application/xml");
-	}
+	}*/
 
 	public String getLatLong(String addr) throws ClientProtocolException,
 			IOException {

@@ -73,7 +73,7 @@ public class ParkingLocator {
 				} 
 				
 				Node messageNode = doc.getElementsByTagName("MESSAGE").item(0);
-				responseStringBlr.append(messageNode.getTextContent()+"\n");
+				responseStringBlr.append(messageNode.getTextContent()+": ");
 
 				NodeList availNodes = doc.getElementsByTagName("AVL");
 				Node availNode;
@@ -123,7 +123,8 @@ public class ParkingLocator {
 						responseStringBlr.append(p.name);
 					else
 						responseStringBlr.append(p.name+" "+p.intersection);
-					responseStringBlr.append("\n");
+					
+					//responseStringBlr.append("\n");
 					
 				}
 				log.info("response:"+responseStringBlr.toString());
