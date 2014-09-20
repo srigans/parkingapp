@@ -120,11 +120,12 @@ public class ParkingLocator {
 				for (ParkingAvailability p : allParkings)
 				{
 					if (p.getStatus().equals("ON"))
-					responseStringBlr.append(p.name);
+						responseStringBlr.append(p.name);
 					else
 						responseStringBlr.append(p.name+" "+p.intersection);
+					responseStringBlr.append("\n");
+					
 				}
-				responseStringBlr.append("\n");
 				log.info("response:"+responseStringBlr.toString());
 
 				return responseStringBlr.toString();
