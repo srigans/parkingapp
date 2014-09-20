@@ -23,7 +23,7 @@ import org.xml.sax.SAXException;
 
 public class ParkingLocator {
 
-	private static final int NUMBER_OF_AVAIL_PARKING = 10;
+	private static final int NUMBER_OF_AVAIL_PARKING = 5;
 	public static final String PARKING_AVAIL_SERVICE = "http://api.sfpark.org/sfpark/rest/availabilityservice?response=xml&uom=mile&";
 	private HttpClientBuilder clientBuilder = HttpClientBuilder.create();
 
@@ -78,41 +78,53 @@ public class ParkingLocator {
 				NodeList availNodes = doc.getElementsByTagName("AVL");
 				Node availNode;
 				String availName,availDesc,availInterst;
-				ArrayList<String> availParkingInfo = new ArrayList<String>();
+				ArrayList<ParkingAvailability> allParkings = new ArrayList<ParkingAvailability>();
 				for (int i=0; (i< availNodes.getLength() && i<NUMBER_OF_AVAIL_PARKING);i++) {
 					availNode=availNodes.item(i);
+					ParkingAvailability  availParking = new ParkingAvailability();
 					
 					for (int j=0;j<availNode.getChildNodes().getLength();j++) {
 						
+
+						if (availNode.getChildNodes().item(j).getNodeName().equals("TYPE"))
+						{
+							availName= availNode.getChildNodes().item(j).getTextContent();
+							availParking.setStatus(availName);
+									
+						}
 						
 						if (availNode.getChildNodes().item(j).getNodeName().equals("NAME"))
 						{
 							availName= availNode.getChildNodes().item(j).getTextContent();
-							availParkingInfo.add(availName);
+							availParking.setName(availName);
 									
 						}
 						if (availNode.getChildNodes().item(j).getNodeName().equals("DESC"))
 						{
 							availDesc = availNode.getChildNodes().item(j).getTextContent();
-							availParkingInfo.add(availDesc);
+							availParking.setDesc(availDesc);
 									
 						}
 						if (availNode.getChildNodes().item(j).getNodeName().equals("INTER"))
 						{
 							availInterst = availNode.getChildNodes().item(j).getTextContent();
-							availParkingInfo.add(availInterst);
+							availParking.setIntersection(availInterst);
 									
 						}
-						
+					
 					}
 					
-					for (String s : availParkingInfo)
-					{
-						responseStringBlr.append(s+" ");
-					}
-					responseStringBlr.append("\n");
+					allParkings.add(availParking);
 					
 				}
+				for (ParkingAvailability p : allParkings)
+				{
+					if (p.getStatus().equals("ON"))
+					responseStringBlr.append(p.name);
+					else
+						responseStringBlr.append(p.name+" "+p.intersection);
+				}
+				responseStringBlr.append("\n");
 				log.info("response:"+responseStringBlr.toString());
 
 				return responseStringBlr.toString();
@@ -133,4 +145,37 @@ public class ParkingLocator {
 		ParkingLocator test = new ParkingLocator();
 		System.out.println(test.getAvailableParking("37.7780360,-122.4325120",0.1));
 	}
+}
+
+class ParkingAvailability {
+	
+	String status;
+	String name;
+	String desc;
+	String intersection;
+	public String getStatus() {
+		return status;
+	}
+	public void setStatus(String status) {
+		this.status = status;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public String getDesc() {
+		return desc;
+	}
+	public void setDesc(String desc) {
+		this.desc = desc;
+	}
+	public String getIntersection() {
+		return intersection;
+	}
+	public void setIntersection(String intersection) {
+		this.intersection = intersection;
+	}
+	
 }
