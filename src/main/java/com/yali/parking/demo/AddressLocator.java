@@ -54,7 +54,7 @@ public class AddressLocator extends HttpServlet {
 	private void getTwiMLForResponse(HttpServletRequest req,
 			HttpServletResponse resp) throws ServletException, IOException {
 
-		String lagLng = getLatLong(address);
+		String lagLng = getLatLong(req.getParameter("Body"));
 
 		//radius = Double.parseDouble(req.getParameter("Body"));
 		String parkings = parkingLocator.getAvailableParking(lagLng, 1);
