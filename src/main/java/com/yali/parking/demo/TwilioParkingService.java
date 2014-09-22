@@ -65,6 +65,7 @@ public class TwilioParkingService extends HttpServlet {
 			try {
 				Double radius = Double.parseDouble(radiusString);
 				getTwiMLForSmsResponse(latlng,radius, resp);
+				numberToLagLngMap.remove(fromNumber);
 				
 			} catch (NumberFormatException nfe) {
 				getTwiMLForGatheringRadius(req, resp);

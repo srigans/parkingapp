@@ -72,9 +72,6 @@ public class ParkingLocator {
 					return "server error, no parking found";
 				} 
 				
-				Node messageNode = doc.getElementsByTagName("MESSAGE").item(0);
-				//responseStringBlr.append(messageNode.getTextContent()+": ");
-
 				NodeList availNodes = doc.getElementsByTagName("AVL");
 				Node availNode;
 				String availName,availDesc,availInterst;
