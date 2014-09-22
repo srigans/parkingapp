@@ -79,7 +79,7 @@ public class TwilioParkingService extends HttpServlet {
 		// radius = Double.parseDouble(req.getParameter("Body"));
 		String parkings = parkingLocator.getAvailableParking(lagLng, radius);
 
-		if (parkings == null) {
+		if (parkings == null || parkings.isEmpty()) {
 			resp.getWriter()
 					.print("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
 							+ "<Response>\n"
