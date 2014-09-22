@@ -64,8 +64,7 @@ public class TwilioParkingService extends HttpServlet {
 			radiusString= (radiusString.contains("mile"))? radiusString.substring(0, radiusString.indexOf("mile")).trim() :radiusString ;
 			try {
 				Double radius = Double.parseDouble(radiusString);
-				getTwiMLForSmsResponse(latlng,radius, resp);
-				numberToLagLngMap.remove(fromNumber);
+				getTwiMLForSmsResponse(fromNumber,latlng,radius, resp);
 				
 			} catch (NumberFormatException nfe) {
 				getTwiMLForGatheringRadius(req, resp);
@@ -73,17 +72,31 @@ public class TwilioParkingService extends HttpServlet {
 		} 
 	}
 
-	private void getTwiMLForSmsResponse(String lagLng,
-			double radius, HttpServletResponse resp) throws ServletException, IOException {
+	private void getTwiMLForSmsResponse(String fromNumber, String lagLng,
+			double radius, HttpServletResponse resp) throws ServletException,
+			IOException {
 
-		
 		// radius = Double.parseDouble(req.getParameter("Body"));
 		String parkings = parkingLocator.getAvailableParking(lagLng, radius);
-		resp.getWriter().print(
-				"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + "<Response>\n"
-						+ "<Message from=\"+12403033451\">Parking info:"
-						+ parkings + "</Message>\n" + "</Response>");
-		resp.setContentType("application/xml");
+
+		if (parkings == null) {
+			resp.getWriter()
+					.print("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+							+ "<Response>\n"
+							+ "<Message from=\"+12403033451\"> No parking found, please increase your search radius"
+							+ "</Message>\n" + "</Response>");
+			resp.setContentType("application/xml");
+
+		} else {
+			resp.getWriter().print(
+					"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+							+ "<Response>\n"
+							+ "<Message from=\"+12403033451\">Parking spots found:\n"
+							+ parkings + "</Message>\n" + "</Response>");
+			resp.setContentType("application/xml");
+
+			numberToLagLngMap.remove(fromNumber);
+		}
 
 	}
 
