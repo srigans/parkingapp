@@ -53,7 +53,7 @@ public class TwilioParkingService extends HttpServlet {
 		if (latlng == null || latlng.isEmpty()) {
 			address = req.getParameter("Body");
 			latlng = getLatLong(address);
-			if (latlng != null) {
+			if (latlng == null) {
 				getTwiMLForGatheringAddress(req, resp);
 			} else {
 				numberToLagLngMap.put(fromNumber, latlng);
