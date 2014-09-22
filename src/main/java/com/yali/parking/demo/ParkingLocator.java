@@ -132,7 +132,7 @@ public class ParkingLocator {
 				}
 				log.info("response:"+responseStringBlr.toString());
 
-				return responseStringBlr.toString().substring(0, 1600);
+				return responseStringBlr.toString();
 			}
 			catch (ParserConfigurationException e) {
 				e.printStackTrace();
