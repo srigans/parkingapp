@@ -73,7 +73,7 @@ public class ParkingLocator {
 				} 
 				
 				Node messageNode = doc.getElementsByTagName("MESSAGE").item(0);
-				responseStringBlr.append(messageNode.getTextContent()+": ");
+				//responseStringBlr.append(messageNode.getTextContent()+": ");
 
 				NodeList availNodes = doc.getElementsByTagName("AVL");
 				Node availNode;
@@ -112,20 +112,23 @@ public class ParkingLocator {
 									
 						}
 					
-					}
-					
+					}					
 					allParkings.add(availParking);
 					
 				}
+				
+				
+				int count=1;
 				for (ParkingAvailability p : allParkings)
 				{
+					responseStringBlr.append(count+". ");
 					if (p.getStatus().equals("ON"))
 						responseStringBlr.append(p.name);
 					else
-						responseStringBlr.append(p.name+" "+p.intersection);
+						responseStringBlr.append(p.name+"("+p.intersection+")");
 					
 					responseStringBlr.append("\n");
-					
+					count++;
 				}
 				log.info("response:"+responseStringBlr.toString());
 

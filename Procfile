@@ -1,1 +1,1 @@
-web:    java $JAVA_OPTS -cp target/classes:target/dependency/* com.yali.parking.demo.AddressLocator
+web:    java $JAVA_OPTS -cp target/classes:target/dependency/* com.yali.parking.demo.TwilioParkingService

@@ -2,6 +2,7 @@ package com.yali.parking.demo;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.*;
@@ -25,7 +26,7 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 
-public class AddressLocator extends HttpServlet {
+public class TwilioParkingService extends HttpServlet {
 
 	/**
 	 * 
@@ -36,49 +37,77 @@ public class AddressLocator extends HttpServlet {
 
 	private HttpClientBuilder clientBuilder = HttpClientBuilder.create();
 
-	private Log log = LogFactory.getLog(AddressLocator.class);
+	private Log log = LogFactory.getLog(TwilioParkingService.class);
 	private ParkingLocator parkingLocator = new ParkingLocator();
 
-	String address = "";
-	double radius = 0;
-
+	ConcurrentHashMap<String, String> numberToLagLngMap = new ConcurrentHashMap<String, String>();
+	
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
-		
-			getTwiMLForResponse(req, resp);
-		
 
+		String fromNumber = req.getParameter("From");
+		String address;
+		String latlng = numberToLagLngMap.get(fromNumber);
+
+		if (latlng == null || latlng.isEmpty()) {
+			address = req.getParameter("Body");
+			latlng = getLatLong(address);
+			if (latlng != null) {
+				getTwiMLForGatheringAddress(req, resp);
+			} else {
+				numberToLagLngMap.put(fromNumber, latlng);
+				getTwiMLForGatheringRadius(req, resp);
+			}
+		} else {
+			String radiusString=req.getParameter("Body");
+			radiusString=radiusString.substring(0, radiusString.indexOf("mile")).trim();
+			try {
+				Double radius = Double.parseDouble(radiusString);
+				getTwiMLForSmsResponse(latlng,radius, resp);
+				
+			} catch (NumberFormatException nfe) {
+				getTwiMLForGatheringRadius(req, resp);
+			}
+		} 
 	}
 
-	private void getTwiMLForResponse(HttpServletRequest req,
-			HttpServletResponse resp) throws ServletException, IOException {
+	private void getTwiMLForSmsResponse(String lagLng,
+			double radius, HttpServletResponse resp) throws ServletException, IOException {
 
-		String lagLng = getLatLong(req.getParameter("Body"));
-
-		//radius = Double.parseDouble(req.getParameter("Body"));
-		String parkings = parkingLocator.getAvailableParking(lagLng, 1);
-		resp.getWriter()
-				.print("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-						+ "<Response>\n"
+		
+		// radius = Double.parseDouble(req.getParameter("Body"));
+		String parkings = parkingLocator.getAvailableParking(lagLng, radius);
+		resp.getWriter().print(
+				"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + "<Response>\n"
 						+ "<Message from=\"+12403033451\">Parking info:"
 						+ parkings + "</Message>\n" + "</Response>");
 		resp.setContentType("application/xml");
 
-		address="";
 	}
 
-	/*private void getInitialTwiML(HttpServletRequest req,
+	private void getTwiMLForGatheringAddress(HttpServletRequest req,
 			HttpServletResponse resp) throws IOException {
-		address=req.getParameter("Body");
 		resp.getWriter()
 				.print("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
 						+ "<Response>\n"
 						+ "<Message from=\"+12403033451\">"
-						+ "Please enter radius of your search: "
+						+ "Welcome to ParkingMadeEasy! Please enter your address again"
 						+ "</Message>\n" + "</Response>");
 		resp.setContentType("application/xml");
-	}*/
+	}
+
+	private void getTwiMLForGatheringRadius(HttpServletRequest req,
+			HttpServletResponse resp) throws IOException {
+		resp.getWriter()
+				.print("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+						+ "<Response>\n"
+						+ "<Message from=\"+12403033451\">"
+						+ "Welcome to ParkingMadeEasy! Please narrow your search "
+						+ "radius by the miles" + "</Message>\n"
+						+ "</Response>");
+		resp.setContentType("application/xml");
+	}
 
 	public String getLatLong(String addr) throws ClientProtocolException,
 			IOException {
@@ -155,38 +184,13 @@ public class AddressLocator extends HttpServlet {
 			} catch (SAXException e) {
 				e.printStackTrace();
 			}
-		} else
+		} else {
 			log.info("Opppos, Google Geocoding API failed!");
-
+			return null;
+		}
 		return lat + "," + lng;
 
 	}
-
-	/*
-	 * private void showDatabase(HttpServletRequest req, HttpServletResponse
-	 * resp) throws ServletException, IOException { try { Connection connection
-	 * = getConnection();
-	 * 
-	 * Statement stmt = connection.createStatement();
-	 * stmt.executeUpdate("CREATE TABLE IF NOT EXISTS ticks (tick timestamp)");
-	 * stmt.executeUpdate("INSERT INTO ticks VALUES (now())"); ResultSet rs =
-	 * stmt.executeQuery("SELECT tick FROM ticks");
-	 * 
-	 * String out = "Hello!\n"; while (rs.next()) { out += "Read from DB: " +
-	 * rs.getTimestamp("tick") + "\n"; }
-	 * 
-	 * resp.getWriter().print(out); } catch (Exception e) {
-	 * resp.getWriter().print("There was an error: " + e.getMessage()); } }
-	 * 
-	 * private Connection getConnection() throws URISyntaxException,
-	 * SQLException { URI dbUri = new URI(System.getenv("DATABASE_URL"));
-	 * 
-	 * String username = dbUri.getUserInfo().split(":")[0]; String password =
-	 * dbUri.getUserInfo().split(":")[1]; String dbUrl = "jdbc:postgresql://" +
-	 * dbUri.getHost() + dbUri.getPath();
-	 * 
-	 * return DriverManager.getConnection(dbUrl, username, password); }
-	 */
 
 	public static void main(String[] args) throws Exception {
 		Server server = new Server(Integer.valueOf(System.getenv("PORT")));
@@ -194,7 +198,7 @@ public class AddressLocator extends HttpServlet {
 				ServletContextHandler.SESSIONS);
 		context.setContextPath("/");
 		server.setHandler(context);
-		context.addServlet(new ServletHolder(new AddressLocator()), "/*");
+		context.addServlet(new ServletHolder(new TwilioParkingService()), "/*");
 		server.start();
 		server.join();
 	}
