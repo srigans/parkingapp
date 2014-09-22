@@ -61,7 +61,7 @@ public class TwilioParkingService extends HttpServlet {
 			}
 		} else {
 			String radiusString=req.getParameter("Body");
-			radiusString=radiusString.substring(0, radiusString.indexOf("mile")).trim();
+			radiusString= (radiusString.contains("mile"))? radiusString.substring(0, radiusString.indexOf("mile")).trim() :radiusString ;
 			try {
 				Double radius = Double.parseDouble(radiusString);
 				getTwiMLForSmsResponse(latlng,radius, resp);
