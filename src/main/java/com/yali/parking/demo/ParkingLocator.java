@@ -125,14 +125,14 @@ public class ParkingLocator {
 					if (p.getStatus().equals("ON"))
 						responseStringBlr.append(p.name);
 					else
-						responseStringBlr.append(p.name+"("+p.intersection+")");
+						responseStringBlr.append(p.name+" ( located on "+p.intersection+" )");
 					
 					responseStringBlr.append("\n");
 					count++;
 				}
 				log.info("response:"+responseStringBlr.toString());
 
-				return responseStringBlr.toString().substring(0, 160);
+				return responseStringBlr.toString().substring(0, 1600);
 			}
 			catch (ParserConfigurationException e) {
 				e.printStackTrace();
