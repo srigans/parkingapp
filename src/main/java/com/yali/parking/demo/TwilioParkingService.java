@@ -118,7 +118,7 @@ public class TwilioParkingService extends HttpServlet {
 						+ "<Response>\n"
 						+ "<Message from=\"+12403033451\">"
 						+ "Welcome to ParkingMadeEasy! Please narrow your search "
-						+ "radius by the miles" + "</Message>\n"
+						+ "radius by the miles, you can reply with 0.5 miles, or just 0.5" + "</Message>\n"
 						+ "</Response>");
 		resp.setContentType("application/xml");
 	}
