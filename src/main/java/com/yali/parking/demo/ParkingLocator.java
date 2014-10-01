@@ -114,14 +114,14 @@ public class ParkingLocator {
 						}
 					
 					}			
+
+					if (count>= NUMBER_OF_AVAIL_PARKING)
+						break;
+					
 					if (!allParkings.containsKey(availName)) {
 						allParkings.put(availName, availParking);
 						count++;
 					}
-					if (count> NUMBER_OF_AVAIL_PARKING)
-						break;
-					
-					
 				}
 				
 				
@@ -130,9 +130,9 @@ public class ParkingLocator {
 				{
 					responseStringBlr.append(index+". ");
 					if (p.getStatus().equals("ON"))
-						responseStringBlr.append(p.name);
+						responseStringBlr.append("On-street: "+p.name);
 					else
-						responseStringBlr.append(p.name+" ( located on "+p.intersection+" )");
+						responseStringBlr.append("Off-street: "+p.name+" ( located on "+p.intersection+" )");
 					
 					responseStringBlr.append("\n");
 					index++;
