@@ -132,19 +132,20 @@ public class ParkingLocator {
 					responseStringBlr.append("On-street parking found:\n");
 					for (ParkingAvailability p : onStreetParkings.values())
 					{
-						responseStringBlr.append(">>");
+						responseStringBlr.append(index+". ");
 						responseStringBlr.append(p.name);
 						responseStringBlr.append("\n");
 						index++;
 					}
 				}
 				if (offStreetParkings.size()!=0) {
-					responseStringBlr.append("*************************\n");
+					if (onStreetParkings.size()!=0)
+						responseStringBlr.append("*************************\n");
 					responseStringBlr.append("Off-street parking found:\n");
 					for (ParkingAvailability p : offStreetParkings.values())
 					{
-						responseStringBlr.append(">>");
-						responseStringBlr.append(p.name+" ( located on "+p.intersection+" )");
+						responseStringBlr.append(index+". ");
+						responseStringBlr.append(p.name+" (located on "+p.intersection+")");
 						responseStringBlr.append("\n");
 						index++;
 					}
