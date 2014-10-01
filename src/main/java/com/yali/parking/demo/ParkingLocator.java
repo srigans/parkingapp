@@ -78,7 +78,8 @@ public class ParkingLocator {
 				NodeList availNodes = doc.getElementsByTagName("AVL");
 				Node availNode;
 				String availStatus="", availName = "",availDesc,availInterst;
-				HashMap<String, ParkingAvailability> allParkings = new HashMap<String, ParkingAvailability>();
+				HashMap<String, ParkingAvailability> onStreetParkings = new HashMap<String, ParkingAvailability>();
+				HashMap<String, ParkingAvailability> offStreetParkings = new HashMap<String, ParkingAvailability>();
 				int count =0;
 				for (int i=0; i< availNodes.getLength();i++) {
 					availNode=availNodes.item(i);
@@ -118,24 +119,41 @@ public class ParkingLocator {
 					if (count>= NUMBER_OF_AVAIL_PARKING)
 						break;
 					
-					if (!allParkings.containsKey(availName)) {
-						allParkings.put(availName, availParking);
-						count++;
+					if (availStatus.equals("ON")) {
+						if (!onStreetParkings.containsKey(availName)) {
+							onStreetParkings.put(availName, availParking);
+							count++;
+						}	
+					} else {
+						if (!offStreetParkings.containsKey(availName)) {
+							offStreetParkings.put(availName, availParking);
+							count++;
+						}
 					}
 				}
 				
 				
 				int index=1;
-				for (ParkingAvailability p : allParkings.values())
-				{
-					responseStringBlr.append(index+". ");
-					if (p.getStatus().equals("ON"))
-						responseStringBlr.append("On-street: "+p.name);
-					else
+				if (onStreetParkings.size()!=0) {
+					responseStringBlr.append("On-street parking found:\n");
+					for (ParkingAvailability p : onStreetParkings.values())
+					{
+						responseStringBlr.append(index+". ");
+						responseStringBlr.append(" "+p.name);
+						
+						responseStringBlr.append("\n");
+						index++;
+					}
+				}
+				if (offStreetParkings.size()!=0) {
+					responseStringBlr.append("Off-street parking found:\n");
+					for (ParkingAvailability p : onStreetParkings.values())
+					{
+						responseStringBlr.append(index+". ");
 						responseStringBlr.append("Off-street: "+p.name+" ( located on "+p.intersection+" )");
-					
-					responseStringBlr.append("\n");
-					index++;
+						responseStringBlr.append("\n");
+						index++;
+					}
 				}
 				log.info("response:"+responseStringBlr.toString());
 
