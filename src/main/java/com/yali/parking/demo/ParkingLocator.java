@@ -2,7 +2,10 @@ package com.yali.parking.demo;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -74,9 +77,10 @@ public class ParkingLocator {
 				
 				NodeList availNodes = doc.getElementsByTagName("AVL");
 				Node availNode;
-				String availName,availDesc,availInterst;
-				ArrayList<ParkingAvailability> allParkings = new ArrayList<ParkingAvailability>();
-				for (int i=0; (i< availNodes.getLength() && i<NUMBER_OF_AVAIL_PARKING);i++) {
+				String availStatus="", availName = "",availDesc,availInterst;
+				HashMap<String, ParkingAvailability> allParkings = new HashMap<String, ParkingAvailability>();
+				int count =0;
+				for (int i=0; i< availNodes.getLength();i++) {
 					availNode=availNodes.item(i);
 					ParkingAvailability  availParking = new ParkingAvailability();
 					
@@ -85,8 +89,8 @@ public class ParkingLocator {
 
 						if (availNode.getChildNodes().item(j).getNodeName().equals("TYPE"))
 						{
-							availName= availNode.getChildNodes().item(j).getTextContent();
-							availParking.setStatus(availName);
+							availStatus= availNode.getChildNodes().item(j).getTextContent();
+							availParking.setStatus(availStatus);
 									
 						}
 						
@@ -109,14 +113,19 @@ public class ParkingLocator {
 									
 						}
 					
-					}					
-					allParkings.add(availParking);
+					}			
+					if (!allParkings.containsKey(availName)) {
+						allParkings.put(availName, availParking);
+						count++;
+					}
+					if (count> NUMBER_OF_AVAIL_PARKING)
+						break;
+					
 					
 				}
 				
 				
-				int count=1;
-				for (ParkingAvailability p : allParkings)
+				for (ParkingAvailability p : allParkings.values())
 				{
 					responseStringBlr.append(count+". ");
 					if (p.getStatus().equals("ON"))
@@ -144,8 +153,16 @@ public class ParkingLocator {
 
 	
 	public static void main(String args[]) throws ClientProtocolException, IOException {
-		ParkingLocator test = new ParkingLocator();
-		System.out.println(test.getAvailableParking("37.7780360,-122.4325120",0.1));
+		
+		 try {
+	            String addr = InetAddress.getLocalHost().toString();
+	            System.out.println("address="+addr);
+	        }
+	        catch (final UnknownHostException e) {
+	            throw new ExceptionInInitializerError("Could not resolve localhost, bailing out");
+	        }
+		//ParkingLocator test = new ParkingLocator();
+		//System.out.println(test.getAvailableParking("37.7780360,-122.4325120",0.1));
 	}
 }
 
