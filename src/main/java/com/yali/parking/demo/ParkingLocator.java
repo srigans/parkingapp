@@ -86,34 +86,28 @@ public class ParkingLocator {
 					ParkingAvailability  availParking = new ParkingAvailability();
 					
 					for (int j=0;j<availNode.getChildNodes().getLength();j++) {
-						
-
+					
 						if (availNode.getChildNodes().item(j).getNodeName().equals("TYPE"))
 						{
 							availStatus= availNode.getChildNodes().item(j).getTextContent();
-							availParking.setStatus(availStatus);
-									
+							availParking.setStatus(availStatus);			
 						}
 						
 						if (availNode.getChildNodes().item(j).getNodeName().equals("NAME"))
 						{
 							availName= availNode.getChildNodes().item(j).getTextContent();
-							availParking.setName(availName);
-									
+							availParking.setName(availName);		
 						}
 						if (availNode.getChildNodes().item(j).getNodeName().equals("DESC"))
 						{
 							availDesc = availNode.getChildNodes().item(j).getTextContent().replace("&", "and").replace("'", "");
 							availParking.setDesc(availDesc);
-									
 						}
 						if (availNode.getChildNodes().item(j).getNodeName().equals("INTER"))
 						{
 							availInterst = availNode.getChildNodes().item(j).getTextContent().replace("&", "and").replace("'", "");
 							availParking.setIntersection(availInterst);
-									
 						}
-					
 					}			
 
 					if (count>= NUMBER_OF_AVAIL_PARKING)
@@ -138,17 +132,18 @@ public class ParkingLocator {
 					responseStringBlr.append("On-street parking found:\n");
 					for (ParkingAvailability p : onStreetParkings.values())
 					{
-						responseStringBlr.append(index+". ");
+						responseStringBlr.append(">>");
 						responseStringBlr.append(p.name);
 						responseStringBlr.append("\n");
 						index++;
 					}
 				}
 				if (offStreetParkings.size()!=0) {
+					responseStringBlr.append("*************************\n");
 					responseStringBlr.append("Off-street parking found:\n");
 					for (ParkingAvailability p : offStreetParkings.values())
 					{
-						responseStringBlr.append(index+". ");
+						responseStringBlr.append(">>");
 						responseStringBlr.append(p.name+" ( located on "+p.intersection+" )");
 						responseStringBlr.append("\n");
 						index++;
