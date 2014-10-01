@@ -125,16 +125,17 @@ public class ParkingLocator {
 				}
 				
 				
+				int index=1;
 				for (ParkingAvailability p : allParkings.values())
 				{
-					responseStringBlr.append(count+". ");
+					responseStringBlr.append(index+". ");
 					if (p.getStatus().equals("ON"))
 						responseStringBlr.append(p.name);
 					else
 						responseStringBlr.append(p.name+" ( located on "+p.intersection+" )");
 					
 					responseStringBlr.append("\n");
-					count++;
+					index++;
 				}
 				log.info("response:"+responseStringBlr.toString());
 
