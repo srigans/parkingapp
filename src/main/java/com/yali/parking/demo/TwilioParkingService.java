@@ -50,6 +50,8 @@ public class TwilioParkingService extends HttpServlet {
 
         String fromNumber = req.getParameter("From");
         String twilioNumber = req.getParameter("To");
+        log.info("App received request parameters from Twilio : FromNumber ={" + fromNumber + "}, ToTwilioNumber={"
+                 + twilioNumber + "}");
         String address;
         String latlng = numberToLagLngMap.get(fromNumber);
 
@@ -111,7 +113,7 @@ public class TwilioParkingService extends HttpServlet {
         resp.getWriter()
             .print("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
                    + "<Response>\n"
-                   + "<Message from=\""+twilioNumber+"\">"
+                   + "<Message from=\"" + twilioNumber + "\">"
                    + "Welcome to ParkingMadeEasy! Please enter your address again"
                    + "</Message>\n" + "</Response>");
         resp.setContentType("application/xml");
@@ -122,7 +124,7 @@ public class TwilioParkingService extends HttpServlet {
         resp.getWriter()
             .print("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
                    + "<Response>\n"
-                   + "<Message from=\""+twilioNumber+ "\">"
+                   + "<Message from=\"" + twilioNumber + "\">"
                    + "Welcome to ParkingMadeEasy! Please narrow your search "
                    + "radius by the miles, you can reply with 0.5 miles, or just 0.5" + "</Message>\n"
                    + "</Response>");
@@ -132,12 +134,12 @@ public class TwilioParkingService extends HttpServlet {
     public String getLatLong(String addr) throws ClientProtocolException,
                                                  IOException {
 
-        log.info("address to be looked up: " + addr);
+        log.info("Address to be looked up: " + addr);
         String fullURL = GOOGLE_GEOCODING_API_ROOT + "key=" + API_KEY
                          + "&address=" + addr.replace(" ", "+");
         HttpGet getRequest = new HttpGet(fullURL);
 
-        log.info("full URL for geocoding API: " + fullURL);
+        log.info("Full URL for geocoding API: " + fullURL);
 
         CloseableHttpClient httpClient = clientBuilder.build();
         HttpResponse response = httpClient.execute(getRequest);
