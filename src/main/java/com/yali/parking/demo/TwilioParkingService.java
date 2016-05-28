@@ -57,10 +57,10 @@ public class TwilioParkingService extends HttpServlet {
             address = req.getParameter("Body");
             latlng = getLatLong(address);
             if (latlng == null) {
-                getTwiMLForGatheringAddress(req, resp);
+                getTwiMLForGatheringAddress(req, resp, twilioNumber);
             } else {
                 numberToLagLngMap.put(fromNumber, latlng);
-                getTwiMLForGatheringRadius(req, resp);
+                getTwiMLForGatheringRadius(req, resp, twilioNumber);
             }
         } else {
             String radiusString = req.getParameter("Body");
@@ -72,7 +72,7 @@ public class TwilioParkingService extends HttpServlet {
                 getTwiMLForSmsResponse(fromNumber, twilioNumber, latlng, radius, resp);
 
             } catch (NumberFormatException nfe) {
-                getTwiMLForGatheringRadius(req, resp);
+                getTwiMLForGatheringRadius(req, resp, twilioNumber);
             }
         }
     }
@@ -107,22 +107,22 @@ public class TwilioParkingService extends HttpServlet {
     }
 
     private void getTwiMLForGatheringAddress(HttpServletRequest req,
-                                             HttpServletResponse resp) throws IOException {
+                                             HttpServletResponse resp, String twilioNumber) throws IOException {
         resp.getWriter()
             .print("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
                    + "<Response>\n"
-                   + "<Message from=\"+12403033451\">"
+                   + "<Message from=\""+twilioNumber+"\">"
                    + "Welcome to ParkingMadeEasy! Please enter your address again"
                    + "</Message>\n" + "</Response>");
         resp.setContentType("application/xml");
     }
 
     private void getTwiMLForGatheringRadius(HttpServletRequest req,
-                                            HttpServletResponse resp) throws IOException {
+                                            HttpServletResponse resp, String twilioNumber) throws IOException {
         resp.getWriter()
             .print("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
                    + "<Response>\n"
-                   + "<Message from=\"+12403033451\">"
+                   + "<Message from=\""+twilioNumber+ "\">"
                    + "Welcome to ParkingMadeEasy! Please narrow your search "
                    + "radius by the miles, you can reply with 0.5 miles, or just 0.5" + "</Message>\n"
                    + "</Response>");
