@@ -113,16 +113,4 @@ public class ParkingServiceSMS extends HttpServlet {
         resp.setContentType("application/xml");
     }
 
-
-    public static void main(String[] args) throws Exception {
-        Server server = new Server(Integer.valueOf(System.getenv("PORT")));
-        ServletContextHandler context = new ServletContextHandler(
-            ServletContextHandler.SESSIONS);
-        context.setContextPath("/");
-        server.setHandler(context);
-        context.addServlet(new ServletHolder(new ParkingServiceSMS()), "/sms");
-        context.addServlet(new ServletHolder(new ParkingServiceVoice()), "/voice");
-        server.start();
-        server.join();
-    }
 }
