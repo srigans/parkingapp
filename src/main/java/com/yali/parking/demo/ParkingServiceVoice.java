@@ -30,7 +30,7 @@ public class ParkingServiceVoice extends HttpServlet {
         resp.getWriter()
             .print("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
                    + "<Response>\n"
-                   + "<Say voice=\"woman\"> Welcome to ParkingMadeEasy! Please send your address via text message"
+                   + "<Say voice=\"woman\"> Welcome to Parking Made Easy! Please send your address via text message"
                    + "</Say>\n" + "</Response>");
         resp.setContentType("application/xml");
     }
