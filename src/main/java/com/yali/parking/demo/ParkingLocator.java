@@ -1,16 +1,5 @@
 package com.yali.parking.demo;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.HashMap;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpEntity;
@@ -23,6 +12,16 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.HashMap;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 public class ParkingLocator {
 
@@ -140,7 +139,7 @@ public class ParkingLocator {
 				}
 				if (offStreetParkings.size()!=0) {
 					if (onStreetParkings.size()!=0)
-						responseStringBlr.append("*************************\n");
+						responseStringBlr.append("\n");
 					responseStringBlr.append("Off-street parking found:\n");
 					for (ParkingAvailability p : offStreetParkings.values())
 					{
