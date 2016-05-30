@@ -18,6 +18,10 @@ public class ParkingServiceMain {
         server.setHandler(context);
         context.addServlet(new ServletHolder(new ParkingServiceSMS()), "/sms");
         context.addServlet(new ServletHolder(new ParkingServiceVoice()), "/voice");
+
+        context.addServlet(new ServletHolder(new TwilioHandleRecordingServlet()), "/handle-voice");
+
+        context.addServlet(new ServletHolder(new TwilioHandleRecordingServlet()), "/handle-recording");
         server.start();
         server.join();
     }
