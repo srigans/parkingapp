@@ -25,7 +25,7 @@ $ git push heroku master
 $ heroku open
 ```
 
-## Documentation
+### Documentation
 
 For more information about using Java on Heroku, see these Dev Center articles:
 
